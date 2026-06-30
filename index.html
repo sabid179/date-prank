@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>date? · yes/no</title>
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9f0f5;
+            padding: 1.5rem;
+            margin: 0;
+            transition: background 0.25s ease;
+        }
+
+        /* card – wider, shorter, romantic */
+        .card {
+            max-width: 720px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 48px;
+            padding: 2rem 2.5rem 2.2rem;
+            text-align: center;
+            border: 1px solid #f0dce6;
+            transition: all 0.2s ease;
+        }
+
+        /* header with heart – compact */
+        .question {
+            font-size: 2rem;
+            font-weight: 540;
+            letter-spacing: -0.02em;
+            color: #2d1f27;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.1rem;
+        }
+        .question i {
+            color: #e8437a;
+            font-size: 1.9rem;
+        }
+        .question i:last-child {
+            font-size: 1.6rem;
+        }
+
+        .sub-heart {
+            font-size: 0.8rem;
+            color: #b690a0;
+            letter-spacing: 2px;
+            margin-top: 0rem;
+            margin-bottom: 1.6rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.6rem;
+            font-weight: 300;
+        }
+        .sub-heart i {
+            color: #d47a96;
+        }
+
+        /* button group – column layout, compact */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 1.2rem 0 0.4rem;
+            position: relative;
+            min-height: 80px;
+            width: 100%;
+        }
+
+        /* base button – wider, flat, soft */
+        .btn {
+            border: 1px solid #e8d5df;
+            background: white;
+            padding: 0.9rem 2.8rem;
+            border-radius: 80px;
+            font-size: 1.4rem;
+            font-weight: 520;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            width: 100%;
+            max-width: 300px;
+            letter-spacing: 0.2px;
+            background: #ffffff;
+            color: #2d1f27;
+            position: relative;
+        }
+
+        .btn-yes {
+            background: #e8437a;
+            border-color: #d43b6b;
+            color: white;
+        }
+        .btn-yes i {
+            color: white;
+            font-size: 1.3rem;
+        }
+        .btn-yes:hover {
+            background: #d43b6b;
+            border-color: #c22e5c;
+        }
+        .btn-yes:active {
+            transform: scale(0.96);
+        }
+
+        /* Yes button clicked state */
+        .btn-yes.clicked {
+            background: #2d8f5e;
+            border-color: #1f7a4d;
+            transform: scale(1.05);
+            box-shadow: 0 0 0 3px rgba(45, 143, 94, 0.3);
+        }
+        .btn-yes.clicked i {
+            color: #ffffff;
+        }
+
+        .btn-no {
+            background: #fcf5f8;
+            border-color: #e8d5df;
+            color: #3d2a33;
+        }
+        .btn-no i {
+            color: #b47a8e;
+            font-size: 1.2rem;
+        }
+        .btn-no:hover {
+            background: #f8edf2;
+            border-color: #dcc4ce;
+        }
+
+        /* No button clicked state */
+        .btn-no.clicked {
+            background: #d43b6b;
+            border-color: #c22e5c;
+            color: white;
+            transform: scale(0.95);
+        }
+        .btn-no.clicked i {
+            color: white;
+        }
+
+        /* Shake animation for No button click */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            10% { transform: translateX(-10px) rotate(-5deg); }
+            20% { transform: translateX(10px) rotate(5deg); }
+            30% { transform: translateX(-10px) rotate(-3deg); }
+            40% { transform: translateX(10px) rotate(3deg); }
+            50% { transform: translateX(-5px) rotate(-2deg); }
+            60% { transform: translateX(5px) rotate(2deg); }
+            70% { transform: translateX(-3px) rotate(-1deg); }
+            80% { transform: translateX(3px) rotate(1deg); }
+            90% { transform: translateX(-2px) rotate(0deg); }
+        }
+
+        .btn-no.shake {
+            animation: shake 0.6s ease-in-out;
+        }
+
+        /* no button moving – stays inside viewport */
+        .btn-no--move {
+            transition: all 0.1s cubic-bezier(0.2, 0.9, 0.4, 1);
+            will-change: transform, left, top;
+            position: relative;
+        }
+
+        /* celebration text – joyful, compact */
+        .celebration-text {
+            font-size: 2.2rem;
+            font-weight: 620;
+            color: #1f121b;
+            letter-spacing: -0.02em;
+            margin: 0.4rem 0 0rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 0.4s cubic-bezier(0.34, 1.5, 0.64, 1);
+            pointer-events: none;
+        }
+        .celebration-text.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+        .celebration-text i {
+            color: #f5a623;
+            font-size: 2rem;
+        }
+
+        /* retry button – compact */
+        .retry-wrapper {
+            margin-top: 1.4rem;
+            display: flex;
+            justify-content: center;
+        }
+        .btn-retry {
+            background: #f7f0f4;
+            border: 1px solid #e8d5df;
+            color: #3d2a33;
+            padding: 0.6rem 2rem;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: 450;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.15s ease;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(6px);
+        }
+        .btn-retry.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        .btn-retry i {
+            color: #e8437a;
+        }
+        .btn-retry:hover {
+            background: #f0e6ec;
+            border-color: #dcc4ce;
+        }
+
+        /* confetti canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Click feedback label */
+        .click-feedback {
+            font-size: 0.9rem;
+            color: #b690a0;
+            margin-top: 0.5rem;
+            min-height: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            transition: all 0.3s ease;
+        }
+        .click-feedback i {
+            margin-right: 6px;
+        }
+        .click-feedback.yes-feedback {
+            color: #2d8f5e;
+        }
+        .click-feedback.no-feedback {
+            color: #d43b6b;
+        }
+
+        /* responsive */
+        @media (max-width: 600px) {
+            .card { 
+                max-width: 100%; 
+                padding: 1.8rem 1.5rem 1.8rem;
+                border-radius: 36px;
+            }
+            .question { font-size: 1.6rem; }
+            .btn { max-width: 260px; padding: 0.8rem 1.6rem; font-size: 1.2rem; }
+            .btn-group { gap: 0.9rem; min-height: 70px; }
+            .celebration-text { font-size: 1.8rem; }
+        }
+
+        @media (max-width: 420px) {
+            .card { padding: 1.5rem 1rem 1.5rem; }
+            .question { font-size: 1.3rem; }
+            .btn { max-width: 220px; padding: 0.7rem 1.2rem; font-size: 1rem; }
+            .btn-group { gap: 0.8rem; min-height: 60px; }
+            .celebration-text { font-size: 1.4rem; }
+            .sub-heart { font-size: 0.7rem; margin-bottom: 1.2rem; }
+            .click-feedback { font-size: 0.8rem; }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- confetti layer -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="card" id="card">
+        <!-- header with love -->
+        <div class="question">
+            <i class="fas fa-heart"></i>
+            <span>Will you go on a date with me?</span>
+            <i class="fas fa-heart" style="font-size: 1.4rem;"></i>
+        </div>
+        <div class="sub-heart">
+            <i class="fas fa-arrow-right"></i>
+            <i class="fas fa-arrow-left"></i>
+        </div>
+
+        <!-- buttons in column -->
+        <div class="btn-group" id="btnGroup">
+            <button class="btn btn-yes" id="yesBtn">
+                <i class="fas fa-check-circle"></i> Yes
+            </button>
+            <button class="btn btn-no btn-no--move" id="noBtn">
+                <i class="fas fa-times-circle"></i> No
+            </button>
+        </div>
+
+        <!-- Click feedback -->
+        <div class="click-feedback" id="clickFeedback"></div>
+
+        <!-- celebration message only -->
+        <div class="celebration-text" id="celebrationText">
+            <i class="fas fa-glass-cheers"></i>
+            <span>yeeeeeeeee lesss gooooooooo</span>
+            <i class="fas fa-glass-cheers"></i>
+        </div>
+
+        <div class="retry-wrapper">
+            <button class="btn-retry" id="retryBtn">
+                <i class="fas fa-rotate-right"></i> Retry
+            </button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const retryBtn = document.getElementById('retryBtn');
+            const celebrationText = document.getElementById('celebrationText');
+            const clickFeedback = document.getElementById('clickFeedback');
+            const card = document.getElementById('card');
+
+            // Canvas confetti
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            let confettiPieces = [];
+            let animationId = null;
+            let confettiRunning = false;
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            // ----- confetti -----
+            class ConfettiPiece {
+                constructor() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height - height * 0.1;
+                    this.w = Math.random() * 9 + 4;
+                    this.h = Math.random() * 5 + 3;
+                    this.color = `hsl(${Math.random() * 360}, 80%, 65%)`;
+                    this.rotation = Math.random() * 360;
+                    this.rotSpeed = (Math.random() - 0.5) * 7;
+                    this.vx = (Math.random() - 0.5) * 2.5;
+                    this.vy = Math.random() * 3.5 + 1.5;
+                    this.opacity = 1;
+                    this.decel = 0.98;
+                }
+                update() {
+                    this.x += this.vx;
+                    this.vy += 0.05;
+                    this.y += this.vy;
+                    this.rotation += this.rotSpeed;
+                    this.vx *= this.decel;
+                    if (this.y > height + 30) {
+                        this.y = -20;
+                        this.x = Math.random() * width;
+                        this.vy = Math.random() * 3 + 1;
+                        this.vx = (Math.random() - 0.5) * 2;
+                    }
+                    if (this.x < -30) this.x = width + 20;
+                    if (this.x > width + 30) this.x = -20;
+                }
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate((this.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = this.opacity;
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+                    ctx.restore();
+                }
+            }
+
+            function initConfetti(count = 140) {
+                confettiPieces = [];
+                for (let i = 0; i < count; i++) {
+                    confettiPieces.push(new ConfettiPiece());
+                }
+            }
+
+            function drawConfetti() {
+                ctx.clearRect(0, 0, width, height);
+                for (let p of confettiPieces) {
+                    p.update();
+                    p.draw();
+                }
+                if (confettiRunning) {
+                    animationId = requestAnimationFrame(drawConfetti);
+                }
+            }
+
+            function startConfetti() {
+                if (confettiRunning) return;
+                confettiRunning = true;
+                initConfetti(160);
+                if (animationId) cancelAnimationFrame(animationId);
+                drawConfetti();
+            }
+
+            function stopConfetti() {
+                confettiRunning = false;
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                    animationId = null;
+                }
+                ctx.clearRect(0, 0, width, height);
+                confettiPieces = [];
+            }
+
+            // ----- core logic -----
+            function handleYes() {
+                // Show click feedback
+                clickFeedback.innerHTML = '<i class="fas fa-heart"></i> You clicked YES! ❤️';
+                clickFeedback.className = 'click-feedback yes-feedback';
+                
+                // Visual feedback on button
+                yesBtn.classList.add('clicked');
+                noBtn.classList.remove('clicked');
+                
+                // Hide no button, keep yes visible with feedback
+                noBtn.style.display = 'none';
+                // Keep yes button visible but transform it
+                yesBtn.style.transform = 'scale(1.08)';
+
+                celebrationText.classList.add('show');
+                retryBtn.classList.add('visible');
+
+                startConfetti();
+                document.body.style.background = '#f7edf2';
+            }
+
+            function handleNoClick() {
+                // Show click feedback
+                clickFeedback.innerHTML = '<i class="fas fa-frown"></i> You clicked NO! 😅';
+                clickFeedback.className = 'click-feedback no-feedback';
+                
+                // Visual feedback on button
+                noBtn.classList.add('clicked');
+                yesBtn.classList.remove('clicked');
+                
+                // Add shake animation
+                noBtn.classList.remove('shake');
+                // Trigger reflow
+                void noBtn.offsetWidth;
+                noBtn.classList.add('shake');
+                
+                // Move the button away after click
+                setTimeout(() => {
+                    if (noBtn.style.display !== 'none') {
+                        moveNoButton();
+                    }
+                }, 300);
+            }
+
+            function resetAll() {
+                // Reset buttons
+                noBtn.style.display = 'flex';
+                yesBtn.style.display = 'flex';
+                yesBtn.style.transform = 'scale(1)';
+                noBtn.style.transform = 'scale(1)';
+                noBtn.style.position = 'relative';
+                noBtn.style.left = 'auto';
+                noBtn.style.top = 'auto';
+                noBtn.style.transition = 'all 0.1s cubic-bezier(0.2, 0.9, 0.4, 1)';
+                
+                // Reset clicked states
+                yesBtn.classList.remove('clicked');
+                noBtn.classList.remove('clicked');
+                noBtn.classList.remove('shake');
+
+                // Reset feedback
+                clickFeedback.innerHTML = '';
+                clickFeedback.className = 'click-feedback';
+
+                celebrationText.classList.remove('show');
+                retryBtn.classList.remove('visible');
+
+                document.body.style.background = '#f9f0f5';
+
+                stopConfetti();
+                noBtn.classList.add('btn-no--move');
+                noBtn.style.position = 'relative';
+            }
+
+            // ----- move NO button (stays INSIDE viewport) -----
+            function moveNoButton(e) {
+                if (!noBtn || noBtn.style.display === 'none') return;
+
+                const noRect = noBtn.getBoundingClientRect();
+                const btnW = noRect.width;
+                const btnH = noRect.height;
+
+                const pad = 16;
+                const maxX = window.innerWidth - btnW - pad;
+                const maxY = window.innerHeight - btnH - pad;
+                const minX = pad;
+                const minY = pad;
+
+                let randX = Math.random() * (maxX - minX) + minX;
+                let randY = Math.random() * (maxY - minY) + minY;
+
+                randX = Math.min(maxX, Math.max(minX, randX));
+                randY = Math.min(maxY, Math.max(minY, randY));
+
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = randX + 'px';
+                noBtn.style.top = randY + 'px';
+                noBtn.style.transform = 'scale(1)';
+                noBtn.style.transition = 'all 0.09s cubic-bezier(0.2, 0.9, 0.4, 1)';
+                void noBtn.offsetWidth;
+            }
+
+            // ----- attach events to no button -----
+            noBtn.addEventListener('mouseenter', function(e) {
+                if (noBtn.style.display === 'none') return;
+                moveNoButton(e);
+            });
+
+            noBtn.addEventListener('mousemove', function(e) {
+                if (noBtn.style.display === 'none') return;
+                moveNoButton(e);
+            });
+
+            noBtn.addEventListener('touchstart', function(e) {
+                if (noBtn.style.display === 'none') return;
+                e.preventDefault();
+                moveNoButton(e);
+            });
+
+            noBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (noBtn.style.display === 'none') return;
+                handleNoClick();
+                // Move after click feedback
+                setTimeout(() => {
+                    if (noBtn.style.display !== 'none') {
+                        moveNoButton(e);
+                    }
+                }, 200);
+            });
+
+            // ----- yes & retry -----
+            yesBtn.addEventListener('click', function(e) {
+                handleYes();
+            });
+            
+            retryBtn.addEventListener('click', resetAll);
+
+            // ----- keep no button inside viewport on resize -----
+            window.addEventListener('resize', function() {
+                if (noBtn.style.position === 'fixed' && noBtn.style.display !== 'none') {
+                    const rect = noBtn.getBoundingClientRect();
+                    const maxX = window.innerWidth - rect.width - 16;
+                    const maxY = window.innerHeight - rect.height - 16;
+                    let left = parseFloat(noBtn.style.left) || rect.left;
+                    let top = parseFloat(noBtn.style.top) || rect.top;
+                    left = Math.min(maxX, Math.max(16, left));
+                    top = Math.min(maxY, Math.max(16, top));
+                    noBtn.style.left = left + 'px';
+                    noBtn.style.top = top + 'px';
+                }
+            });
+
+            // initial reset
+            window.addEventListener('load', function() {
+                noBtn.style.position = 'relative';
+                noBtn.style.left = 'auto';
+                noBtn.style.top = 'auto';
+                noBtn.style.transform = 'none';
+                setTimeout(() => {
+                    noBtn.style.transition = 'all 0.1s cubic-bezier(0.2, 0.9, 0.4, 1)';
+                }, 10);
+                initConfetti(0);
+                clickFeedback.innerHTML = '';
+                clickFeedback.className = 'click-feedback';
+            });
+
+        })();
+    </script>
+</body>
+</html>
